@@ -13,6 +13,7 @@ import Player from "@/pages/Player";
 import MusicToggle from "@/components/MusicToggle";
 import MusicPlayer from "@/components/MusicPlayer";
 import MusicQueue from "@/components/MusicQueue";
+import AudioPlayer from "@/components/AudioPlayer";
 import { AnimatePresence, motion } from "motion/react";
 import { useMusic } from "@/context/MusicContext";
 import { Home as HomeIcon, Flame, ListVideo, User, Music as MusicIcon } from "lucide-react";
@@ -78,6 +79,7 @@ export default function App() {
 
       <MusicPlayer />
       <MusicQueue />
+      <AudioPlayer />
     </div>
   );
 }
