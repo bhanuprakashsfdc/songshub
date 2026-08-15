@@ -15,12 +15,10 @@ interface ContentGridTileProps {
 export function ContentGridTile({ item, aspectRatio = "aspect-video", list }: ContentGridTileProps) {
   const { setCurrentItem, setQueue } = usePlayerStore();
   const navigate = useNavigate();
-  const { playSong } = useMusic();
-
-  const isSong = (item.type || "").toLowerCase().includes("song") || (item.type || "").toLowerCase().includes("music");
+  const { playSong, audioMode } = useMusic();
 
   const handleClick = () => {
-    if (isSong) {
+    if (audioMode) {
       playSong(item, list || []);
     } else {
       setCurrentItem(item);

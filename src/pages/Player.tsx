@@ -11,10 +11,15 @@ export default function Player() {
   const { movies } = useMovies();
   const currentItem = usePlayerStore((state) => state.currentItem);
   const playNext = usePlayerStore((state) => state.playNext);
-  const { playNext: musicPlayNext, currentSong } = useMusic();
+  const { playNext: musicPlayNext, currentSong, audioMode } = useMusic();
   const [movie, setMovie] = useState<Movie | null>(null);
 
   useEffect(() => {
+    if (audioMode) {
+      setMovie(null);
+      return;
+    }
+
     if (currentItem) {
       setMovie(currentItem);
       return;
@@ -27,7 +32,7 @@ export default function Player() {
     }
 
     setMovie(null);
-  }, [currentItem, id, movies]);
+  }, [audioMode, currentItem, id, movies]);
 
   const handleClose = () => {
     setMovie(null);
@@ -43,6 +48,8 @@ export default function Player() {
       playNext();
     }
   };
+
+  if (audioMode || !movie) return null;
 
   return (
     <main className="relative min-h-screen bg-black">

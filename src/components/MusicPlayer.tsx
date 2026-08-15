@@ -15,6 +15,7 @@ export default function MusicPlayer() {
     reshuffleQueue,
     setShowQueue,
     playNext,
+    audioMode,
   } = useMusic();
   const [progress, setProgress] = useState(0);
 
@@ -26,7 +27,7 @@ export default function MusicPlayer() {
     return () => clearInterval(interval);
   }, [currentSong]);
 
-  if (!currentSong) return null;
+  if (!currentSong || !audioMode) return null;
 
   return (
     <AnimatePresence>

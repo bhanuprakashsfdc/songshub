@@ -14,6 +14,8 @@ import MusicToggle from "@/components/MusicToggle";
 import MusicPlayer from "@/components/MusicPlayer";
 import MusicQueue from "@/components/MusicQueue";
 import AudioPlayer from "@/components/AudioPlayer";
+import AudioModeToggle from "@/components/AudioModeToggle";
+import FloatingAudioIcon from "@/components/FloatingAudioIcon";
 import { AnimatePresence, motion } from "motion/react";
 import { useMusic } from "@/context/MusicContext";
 import { Home as HomeIcon, Flame, ListVideo, User, Music as MusicIcon } from "lucide-react";
@@ -21,7 +23,7 @@ import { Home as HomeIcon, Flame, ListVideo, User, Music as MusicIcon } from "lu
 export default function App() {
   const location = useLocation();
   const isProfilePage = location.pathname === "/profile";
-  const { isMusicMode } = useMusic();
+  const { isMusicMode, audioMode } = useMusic();
 
   const mobileNavItems = [
     { label: "Home", path: "/", icon: HomeIcon },
@@ -38,6 +40,8 @@ export default function App() {
       <a href="#main-content" className="skip-link">Skip to main content</a>
 
       {!isProfilePage && <MusicToggle />}
+      {!isProfilePage && <AudioModeToggle />}
+
       {!isProfilePage && <Navbar />}
 
       <AnimatePresence mode="wait">
@@ -79,7 +83,8 @@ export default function App() {
 
       <MusicPlayer />
       <MusicQueue />
-      <AudioPlayer />
+      {audioMode && <AudioPlayer />}
+      <FloatingAudioIcon />
     </div>
   );
 }
