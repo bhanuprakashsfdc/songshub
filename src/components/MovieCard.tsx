@@ -79,13 +79,16 @@ const MovieCard = memo(function MovieCard({ movie, onPlay, onInfo }: MovieCardPr
       aria-label={`Play ${movie.title}`}
     >
       <img
-        src={movie.thumbnail}
+        src={movie.thumbnail || `/placeholders/movie-01.svg`}
         alt=""
         loading="lazy"
         className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
           showPreview ? "opacity-0" : "opacity-100"
         }`}
         referrerPolicy="no-referrer"
+        onError={(e) => {
+          (e.target as HTMLImageElement).src = `/placeholders/movie-01.svg`;
+        }}
       />
 
       {showPreview && youtubeId && (

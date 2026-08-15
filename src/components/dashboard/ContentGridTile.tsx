@@ -7,9 +7,10 @@ import { Play, Star } from "lucide-react";
 
 interface ContentGridTileProps {
   item: Movie;
+  aspectRatio?: string;
 }
 
-export function ContentGridTile({ item }: ContentGridTileProps) {
+export function ContentGridTile({ item, aspectRatio = "aspect-video" }: ContentGridTileProps) {
   const { setCurrentItem } = usePlayerStore();
   const navigate = useNavigate();
 
@@ -20,14 +21,17 @@ export function ContentGridTile({ item }: ContentGridTileProps) {
 
   return (
     <div
-      className="group relative aspect-[2/3] rounded-lg overflow-hidden bg-muted cursor-pointer transition-all hover:scale-105 hover:shadow-xl"
+      className={`group relative ${aspectRatio} rounded-lg overflow-hidden bg-muted cursor-pointer transition-all hover:scale-105 hover:shadow-xl`}
       onClick={handleClick}
     >
       <img
-        src={item.thumbnail}
+        src={item.thumbnail || `/placeholders/movie-01.svg`}
         alt={item.title}
         className="w-full h-full object-cover transition-opacity group-hover:opacity-80"
         loading="lazy"
+        onError={(e) => {
+          (e.target as HTMLImageElement).src = `/placeholders/movie-01.svg`;
+        }}
       />
 
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity">

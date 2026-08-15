@@ -242,9 +242,11 @@ export default function DetailModal({ movie, onClose, onPlay }: DetailModalProps
                       onClick={() => onPlay(m)}
                       aria-label={`Play ${m.title}`}
                     >
-                      <div className="relative aspect-video">
-                        <img src={m.thumbnail} alt="" loading="lazy" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
-                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                       <div className="relative aspect-video">
+                         <img src={m.thumbnail || `/placeholders/movie-01.svg`} alt="" loading="lazy" className="w-full h-full object-cover" referrerPolicy="no-referrer" onError={(e) => {
+                           (e.target as HTMLImageElement).src = `/placeholders/movie-01.svg`;
+                         }} />
+                         <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                           <div className="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center">
                             <Play className="w-5 h-5 text-black fill-current ml-0.5" />
                           </div>

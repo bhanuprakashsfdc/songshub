@@ -19,7 +19,7 @@ export default function Movies() {
     return (
       <div className="grid grid-cols-7 gap-3 md:gap-4 px-4 md:px-8">
         {Array.from({ length: 28 }).map((_, i) => (
-          <div key={i} className="aspect-[2/3] bg-muted animate-pulse rounded-lg" />
+          <div key={i} className="aspect-video bg-muted animate-pulse rounded-lg" />
         ))}
       </div>
     );

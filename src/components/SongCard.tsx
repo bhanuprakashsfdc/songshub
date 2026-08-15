@@ -13,8 +13,10 @@ export default function SongCard({ song, list }: SongCardProps) {
 
   return (
     <button onClick={() => playSong(song, list)} className="flex-none w-36 md:w-44 text-left group">
-      <div className="relative w-36 h-36 md:w-44 md:h-44 rounded-xl overflow-hidden mb-2 shadow-lg">
-        <img src={song.thumbnail} alt={song.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" referrerPolicy="no-referrer" />
+      <div className="relative aspect-video rounded-xl overflow-hidden mb-2 shadow-lg">
+        <img src={song.thumbnail || `/placeholders/song-01.svg`} alt={song.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" referrerPolicy="no-referrer" onError={(e) => {
+          (e.target as HTMLImageElement).src = `/placeholders/song-01.svg`;
+        }} />
         <div className={`absolute inset-0 bg-black/40 flex items-center justify-center transition-opacity ${active && isPlaying ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}>
           {active && isPlaying ? (
             <div className="flex items-end gap-0.5 h-6">

@@ -1,19 +1,28 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import { Movie } from "@/data/movies";
+
+function getRandomColumns(seed: number) {
+  const options = [3, 4, 5, 6, 7];
+  return options[seed % options.length];
+}
 
 interface PaginatedGridProps {
   items: Movie[];
   pageSize?: number;
   columns?: number;
   renderItem: (item: Movie) => React.ReactNode;
+  randomize?: boolean;
 }
 
-export function PaginatedGrid({ items, pageSize = 28, columns = 7, renderItem }: PaginatedGridProps) {
+export function PaginatedGrid({ items, pageSize = 28, columns = 7, renderItem, randomize = true }: PaginatedGridProps) {
   const [page, setPage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const observerRef = useRef<HTMLDivElement | null>(null);
+
+  const seed = useMemo(() => (randomize ? Date.now() : 0), [randomize]);
+  const gridColumns = useMemo(() => (randomize ? getRandomColumns(seed) : columns), [randomize, columns, seed]);
 
   const totalPages = Math.ceil(items.length / pageSize);
   const currentItems = items.slice(0, (page + 1) * pageSize);
@@ -52,7 +61,7 @@ export function PaginatedGrid({ items, pageSize = 28, columns = 7, renderItem }:
     5: "grid-cols-5",
     6: "grid-cols-6",
     7: "grid-cols-7",
-  }[columns] || "grid-cols-7";
+  }[gridColumns] || "grid-cols-7";
 
   return (
     <div className="w-full">

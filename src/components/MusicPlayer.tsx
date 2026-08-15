@@ -37,8 +37,10 @@ export default function MusicPlayer() {
         className="fixed bottom-0 left-0 w-full z-40 bg-neutral-900/95 backdrop-blur-xl border-t border-white/5"
       >
         <div className="flex items-center gap-4 px-4 py-3">
-          <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
-            <img src={currentSong.thumbnail} alt="" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+          <div className="w-16 aspect-video rounded-lg overflow-hidden flex-shrink-0">
+            <img src={currentSong.thumbnail || `/placeholders/song-01.svg`} alt="" className="w-full h-full object-cover" referrerPolicy="no-referrer" onError={(e) => {
+              (e.target as HTMLImageElement).src = `/placeholders/song-01.svg`;
+            }} />
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-white text-sm font-medium truncate">{currentSong.title}</p>

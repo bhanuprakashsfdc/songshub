@@ -244,12 +244,15 @@ export default function Navbar() {
                           role="option"
                           aria-selected={index === activeSuggestionIndex}
                         >
-                          <img
-                            src={movie.thumbnail}
-                            alt=""
-                            className="w-14 h-9 object-cover rounded flex-shrink-0"
-                            referrerPolicy="no-referrer"
-                          />
+                           <img
+                             src={movie.thumbnail || `/placeholders/movie-01.svg`}
+                             alt=""
+                             className="w-14 aspect-video object-cover rounded flex-shrink-0"
+                             referrerPolicy="no-referrer"
+                             onError={(e) => {
+                               (e.target as HTMLImageElement).src = `/placeholders/movie-01.svg`;
+                             }}
+                           />
                           <div className="flex-1 min-w-0">
                             <p className="text-sm text-white font-medium truncate">{movie.title}</p>
                             <p className="text-xs text-neutral-500">

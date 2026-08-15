@@ -36,8 +36,10 @@ export default function SongRow({ song, index, list }: SongRowProps) {
           </>
         )}
       </div>
-      <div className="w-11 h-11 rounded-lg overflow-hidden flex-shrink-0">
-        <img src={song.thumbnail} alt="" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+      <div className="w-16 aspect-video rounded-lg overflow-hidden flex-shrink-0">
+        <img src={song.thumbnail || `/placeholders/song-01.svg`} alt="" className="w-full h-full object-cover" referrerPolicy="no-referrer" onError={(e) => {
+          (e.target as HTMLImageElement).src = `/placeholders/song-01.svg`;
+        }} />
       </div>
       <div className="flex-1 min-w-0">
         <p className={`text-sm font-medium truncate ${active ? "text-primary" : "text-white"}`}>{song.title}</p>

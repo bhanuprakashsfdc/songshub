@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import Banner from "../components/Banner";
 import MovieRow from "../components/MovieRow";
 import FeaturedGrid from "../components/FeaturedGrid";
@@ -248,16 +248,16 @@ function VideoHomeView() {
   const featuredMovies = useMemo(() => movies.slice(0, 10), [movies]);
   const topRatedMovies = useMemo(() => [...movies].sort((a, b) => parseFloat(b.rating) - parseFloat(a.rating)).slice(0, 10), [movies]);
 
-  const handlePlay = (movie: Movie) => {
+  const handlePlay = useCallback((movie: Movie) => {
     setHeroMovie(movie);
     saveWatchProgress(movie.id, 0);
     setSelectedMovie(movie);
     setSelectedMovieForDetail(null);
-  };
+  }, []);
 
-  const handleInfo = (movie: Movie) => setSelectedMovieForDetail(movie);
+  const handleInfo = useCallback((movie: Movie) => setSelectedMovieForDetail(movie), []);
 
-  const handleVideoEnd = (currentMovie: Movie) => {
+  const handleVideoEnd = useCallback((currentMovie: Movie) => {
     saveWatchProgress(currentMovie.id, 100);
 
     const currentIndex = movies.findIndex((m) => m.id === currentMovie.id);
@@ -273,12 +273,12 @@ function VideoHomeView() {
       setSelectedMovie(randomSong);
       saveWatchProgress(randomSong.id, 0);
     }
-  };
+  }, [movies, songList]);
 
-  const handlePlayerClose = () => {
+  const handlePlayerClose = useCallback(() => {
     setSelectedMovie(null);
     setContinueWatching(getContinueWatchingMovies(movies));
-  };
+  }, [movies]);
 
   if (loading) return <LoadingSpinner />;
 

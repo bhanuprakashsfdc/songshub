@@ -25,12 +25,15 @@ export function ContentTile({ item }: ContentTileProps) {
       onClick={handleClick}
     >
       {/* Thumbnail */}
-      <div className="relative w-40 h-24 md:w-56 md:h-32 flex-shrink-0 rounded-lg overflow-hidden">
+      <div className="relative w-40 md:w-56 aspect-video flex-shrink-0 rounded-lg overflow-hidden">
         <img
-          src={item.thumbnail}
+          src={item.thumbnail || `/placeholders/movie-01.svg`}
           alt={item.title}
           className="w-full h-full object-cover transition-transform group-hover:scale-105"
           loading="lazy"
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = `/placeholders/movie-01.svg`;
+          }}
         />
         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
           <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
