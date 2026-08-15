@@ -54,12 +54,9 @@ export function MusicProvider({ children }: { children: ReactNode }) {
     setIsPlaying((prev) => !prev);
   }, []);
 
-  const toggleShuffle = useCallback(() => {
-    setShuffle((prev) => !prev);
-  }, []);
-
   const reshuffleQueue = useCallback(() => {
     setQueue((prev) => {
+      if (prev.length <= 1) return prev;
       const shuffled = [...prev];
       for (let i = shuffled.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -69,17 +66,44 @@ export function MusicProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
+  const toggleShuffle = useCallback(() => {
+    setShuffle((prev) => {
+      const next = !prev;
+      if (next && queue.length > 1) {
+        reshuffleQueue();
+      }
+      return next;
+    });
+  }, [queue.length, reshuffleQueue]);
+
   const addToQueue = useCallback((song: Movie) => {
     setQueue((prev) => [...prev, song]);
   }, []);
 
   const playNext = useCallback(() => {
-    if (!currentSong || queue.length === 0) return;
-    const index = queue.findIndex((s) => s.id === currentSong.id);
-    const nextIndex = index < queue.length - 1 ? index + 1 : 0;
-    setCurrentSong(queue[nextIndex]);
-    setIsPlaying(true);
-  }, [currentSong, queue]);
+    if (queue.length === 0) return;
+    const currentIndex = currentSong ? queue.findIndex((s) => s.id === currentSong.id) : -1;
+
+    if (shuffle) {
+      if (queue.length === 1) {
+        setCurrentSong(queue[0]);
+        setIsPlaying(true);
+        return;
+      }
+      let nextIndex: number;
+      let attempts = 0;
+      do {
+        nextIndex = Math.floor(Math.random() * queue.length);
+        attempts++;
+      } while (nextIndex === currentIndex && attempts < 20);
+      setCurrentSong(queue[nextIndex]);
+      setIsPlaying(true);
+    } else {
+      const nextIndex = currentIndex < queue.length - 1 ? currentIndex + 1 : 0;
+      setCurrentSong(queue[nextIndex]);
+      setIsPlaying(true);
+    }
+  }, [currentSong, queue, shuffle]);
 
   return (
     <MusicContext.Provider

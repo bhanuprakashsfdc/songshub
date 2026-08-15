@@ -4,11 +4,14 @@ import FullPlayer from "../components/FullPlayer";
 import { useMovies } from "../context/MovieContext";
 import { Movie } from "../data/movies";
 import { usePlayerStore } from "@/store/playerStore";
+import { useMusic } from "@/context/MusicContext";
 
 export default function Player() {
   const { id } = useParams();
   const { movies } = useMovies();
   const currentItem = usePlayerStore((state) => state.currentItem);
+  const playNext = usePlayerStore((state) => state.playNext);
+  const { playNext: musicPlayNext, currentSong } = useMusic();
   const [movie, setMovie] = useState<Movie | null>(null);
 
   useEffect(() => {
@@ -31,9 +34,19 @@ export default function Player() {
     window.history.back();
   };
 
+  const handleVideoEnd = () => {
+    if (!movie) return;
+    const isSong = (movie.type || "").toLowerCase().includes("song") || (movie.type || "").toLowerCase().includes("music");
+    if (isSong && currentSong?.id === movie.id) {
+      musicPlayNext();
+    } else {
+      playNext();
+    }
+  };
+
   return (
     <main className="relative min-h-screen bg-black">
-      <FullPlayer movie={movie} onClose={handleClose} />
+      <FullPlayer movie={movie} onClose={handleClose} onVideoEnd={handleVideoEnd} />
     </main>
   );
 }

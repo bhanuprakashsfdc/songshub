@@ -8,14 +8,18 @@ import { Play, Star } from "lucide-react";
 interface ContentGridTileProps {
   item: Movie;
   aspectRatio?: string;
+  list?: Movie[];
 }
 
-export function ContentGridTile({ item, aspectRatio = "aspect-video" }: ContentGridTileProps) {
-  const { setCurrentItem } = usePlayerStore();
+export function ContentGridTile({ item, aspectRatio = "aspect-video", list }: ContentGridTileProps) {
+  const { setCurrentItem, setQueue } = usePlayerStore();
   const navigate = useNavigate();
 
   const handleClick = () => {
     setCurrentItem(item);
+    if (list && list.length > 0) {
+      setQueue(list);
+    }
     navigate("/player");
   };
 
