@@ -4,6 +4,7 @@ import { Movie } from "@/data/movies";
 import { usePlayerStore } from "@/store/playerStore";
 import { useNavigate } from "react-router-dom";
 import { Play, Star } from "lucide-react";
+import { useMusic } from "@/context/MusicContext";
 
 interface ContentGridTileProps {
   item: Movie;
@@ -14,13 +15,18 @@ interface ContentGridTileProps {
 export function ContentGridTile({ item, aspectRatio = "aspect-video", list }: ContentGridTileProps) {
   const { setCurrentItem, setQueue } = usePlayerStore();
   const navigate = useNavigate();
+  const { playSong, audioMode } = useMusic();
 
   const handleClick = () => {
-    setCurrentItem(item);
-    if (list && list.length > 0) {
-      setQueue(list);
+    if (audioMode) {
+      playSong(item, list || []);
+    } else {
+      setCurrentItem(item);
+      if (list && list.length > 0) {
+        setQueue(list);
+      }
+      navigate("/player");
     }
-    navigate("/player");
   };
 
   return (

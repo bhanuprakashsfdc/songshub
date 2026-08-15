@@ -6,6 +6,9 @@ interface MusicContextType {
   isMusicMode: boolean;
   setIsMusicMode: (mode: boolean) => void;
   toggleMusicMode: () => void;
+  audioMode: boolean;
+  setAudioMode: (mode: boolean) => void;
+  toggleAudioMode: () => void;
   songs: Movie[];
   currentSong: Movie | null;
   isPlaying: boolean;
@@ -27,6 +30,13 @@ const MusicContext = createContext<MusicContextType | undefined>(undefined);
 export function MusicProvider({ children }: { children: ReactNode }) {
   const { movies } = useMovies();
   const [isMusicMode, setIsMusicMode] = useState(false);
+  const [audioMode, setAudioModeState] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('songshub-audio-mode');
+      return stored === 'true';
+    }
+    return false;
+  });
   const [currentSong, setCurrentSong] = useState<Movie | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [queue, setQueue] = useState<Movie[]>([]);
@@ -37,6 +47,19 @@ export function MusicProvider({ children }: { children: ReactNode }) {
     const t = (m.type || '').toLowerCase();
     return t.includes('song') || t.includes('music');
   });
+
+  const setAudioMode = useCallback((mode: boolean) => {
+    setAudioModeState(mode);
+    localStorage.setItem('songshub-audio-mode', String(mode));
+  }, []);
+
+  const toggleAudioMode = useCallback(() => {
+    setAudioModeState((prev) => {
+      const next = !prev;
+      localStorage.setItem('songshub-audio-mode', String(next));
+      return next;
+    });
+  }, []);
 
   const toggleMusicMode = useCallback(() => {
     setIsMusicMode((prev) => !prev);
@@ -111,6 +134,9 @@ export function MusicProvider({ children }: { children: ReactNode }) {
         isMusicMode,
         setIsMusicMode,
         toggleMusicMode,
+        audioMode,
+        setAudioMode,
+        toggleAudioMode,
         songs,
         currentSong,
         isPlaying,
