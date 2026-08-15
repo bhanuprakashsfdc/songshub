@@ -148,3 +148,4 @@ secrets/
 .github/workflows/*.local.yml
 
 .github
+.vite/*

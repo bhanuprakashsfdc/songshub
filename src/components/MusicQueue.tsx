@@ -1,11 +1,11 @@
 "use client";
 
-import { X, Pause } from "lucide-react";
+import { X, Pause, Shuffle } from "lucide-react";
 import { useMusic } from "@/context/MusicContext";
 import { motion, AnimatePresence } from "motion/react";
 
 export default function MusicQueue() {
-  const { queue, currentSong, isPlaying, playSong, setShowQueue, showQueue } = useMusic();
+  const { queue, currentSong, isPlaying, playSong, setShowQueue, showQueue, shuffle, toggleShuffle, reshuffleQueue } = useMusic();
 
   if (!showQueue) return null;
 
@@ -20,13 +20,25 @@ export default function MusicQueue() {
       >
         <div className="flex items-center justify-between p-4 border-b border-white/10">
           <h3 className="text-white font-bold">Queue</h3>
-          <button
-            onClick={() => setShowQueue(false)}
-            className="p-2 text-neutral-400 hover:text-white focus-ring rounded-md"
-            aria-label="Close queue"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => (shuffle ? reshuffleQueue() : toggleShuffle())}
+              className={`p-2 rounded-full transition-colors focus-ring ${
+                shuffle ? "text-primary" : "text-neutral-400 hover:text-white"
+              }`}
+              aria-label={shuffle ? "Reshuffle queue" : "Shuffle queue"}
+              aria-pressed={shuffle}
+            >
+              <Shuffle className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => setShowQueue(false)}
+              className="p-2 text-neutral-400 hover:text-white focus-ring rounded-md"
+              aria-label="Close queue"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
         <div className="p-2">
           {queue.map((song, index) => {

@@ -1,10 +1,21 @@
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useMovies } from "@/context/MovieContext";
 import { PaginatedGrid } from "@/components/dashboard/InfiniteScrollFeed";
 import { ContentGridTile } from "@/components/dashboard/ContentGridTile";
+import { Movie } from "@/data/movies";
+
+function shuffleArray<T>(array: T[]): T[] {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
 
 export default function Movies() {
   const { movies, loading } = useMovies();
+  const [shuffledMovies, setShuffledMovies] = useState<Movie[]>([]);
 
   const filtered = useMemo(() => {
     return movies.filter((m) => {
@@ -14,6 +25,10 @@ export default function Movies() {
       return isMovie && isTelugu && !hasComedy;
     });
   }, [movies]);
+
+  useEffect(() => {
+    setShuffledMovies(shuffleArray(filtered));
+  }, [filtered]);
 
   if (loading) {
     return (
@@ -25,7 +40,7 @@ export default function Movies() {
     );
   }
 
-  if (filtered.length === 0) {
+  if (shuffledMovies.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
         <p className="text-6xl mb-4">🎬</p>
@@ -37,10 +52,10 @@ export default function Movies() {
 
   return (
     <PaginatedGrid
-      items={filtered}
+      items={shuffledMovies}
       pageSize={28}
       columns={7}
-      renderItem={(item) => <ContentGridTile key={item.id} item={item} />}
+      renderItem={(item) => <ContentGridTile key={item.id} item={item} list={shuffledMovies} />}
     />
   );
 }
