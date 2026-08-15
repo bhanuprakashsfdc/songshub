@@ -1,0 +1,150 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+.yarn/
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.cjs
+.pnp.loader.mjs
+.npm
+
+# Build outputs
+build/
+dist/
+out/
+.next/
+.nuxt/
+.vercel/
+.netlify/
+public/build/
+dist-ssr/
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.staging.local
+.env.*.local
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# OS-generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+*~
+.project
+.classpath
+.settings/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.code-workspace
+.vscode-test/
+
+# Testing
+coverage/
+.nyc_output/
+*.lcov
+test-results/
+junit.xml
+.playwright/
+.puppeteer/
+
+# Cache directories
+.cache/
+.parcel-cache/
+.temp/
+.tmp/
+.eslintcache
+.stylelintcache
+
+# Misc
+*.pem
+*.key
+*.p12
+*.pfx
+*.p8
+.terraform/
+.turbo/
+storybook-static/
+.astro/
+.svelte-kit/
+
+# Package manager files (optional)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+bun.lockb
+
+# TypeScript
+*.tsbuildinfo
+*.tgz
+
+# Misc
+*.orig
+*.rej
+*.egg-info/
+*.egg
+*.local
+
+# Local configuration
+config.local.js
+config.local.ts
+tailwind.config.local.js
+postcss.config.local.js
+
+# Secret files
+secrets/
+*.secret
+*.secrets
+
+# Misc
+*.class
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# CI/CD
+.github/workflows/*.local.yml
+
+.github
