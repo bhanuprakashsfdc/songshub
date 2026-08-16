@@ -21,7 +21,7 @@ export function MediaPlayer() {
   } = usePlayerStore();
 
   const embedUrl = currentItem
-    ? `${currentItem.youtubeUrl}?autoplay=${isPlaying ? 1 : 0}&enablejsapi=1`
+    ? `${currentItem.youtubeUrl}?autoplay=${isPlaying ? 1 : 0}&enablejsapi=1&playsinline=1&rel=0&modestbranding=1`
     : "";
 
   useEffect(() => {
@@ -54,6 +54,7 @@ export function MediaPlayer() {
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowFullScreen
         className="absolute inset-0 w-full h-full"
+        onLoad={() => console.debug('[MediaPlayer] iframe loaded', embedUrl)}
       />
 
       <div

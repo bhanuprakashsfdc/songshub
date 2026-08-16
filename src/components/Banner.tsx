@@ -44,7 +44,7 @@ export default function Banner({ movie, onPlay, onInfo }: BannerProps) {
             <iframe
               src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=${isMuted ? 1 : 0}&controls=0&loop=1&playlist=${youtubeId}&rel=0&modestbranding=1&playsinline=1`}
               className="w-full h-full scale-[1.5] pointer-events-none"
-              allow="autoplay"
+              allow="autoplay; encrypted-media; picture-in-picture"
               title=""
               aria-hidden="true"
             />

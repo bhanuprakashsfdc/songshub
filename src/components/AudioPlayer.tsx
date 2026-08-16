@@ -26,38 +26,84 @@ export default function AudioPlayer() {
     };
 
     const handleError = () => {
-      console.warn("Audio playback failed for", currentSong?.title);
+      console.warn("[AudioPlayer] media error for", currentSong?.title, audio.error || null);
+    };
+
+    const handleEvent = (ev: Event) => {
+      const name = ev.type;
+      const target = (ev.target as HTMLMediaElement) || audio;
+      console.debug(`[AudioPlayer] event: ${name}`, {
+        src: target?.src,
+        currentTime: target?.currentTime,
+        paused: target?.paused,
+      });
     };
 
     audio.addEventListener("ended", handleEnded);
     audio.addEventListener("error", handleError);
+    [
+      "play",
+      "playing",
+      "pause",
+      "stalled",
+      "waiting",
+      "suspend",
+      "loadedmetadata",
+      "canplay",
+      "canplaythrough",
+    ].forEach((evt) => audio.addEventListener(evt, handleEvent));
 
     return () => {
       audio.removeEventListener("ended", handleEnded);
       audio.removeEventListener("error", handleError);
+      [
+        "play",
+        "playing",
+        "pause",
+        "stalled",
+        "waiting",
+        "suspend",
+        "loadedmetadata",
+        "canplay",
+        "canplaythrough",
+      ].forEach((evt) => audio.removeEventListener(evt, handleEvent));
       audio.pause();
       audio.src = "";
     };
   }, [playNext, currentSong?.id]);
 
   useEffect(() => {
-    if (!audioRef.current || !currentSong || !directAudioUrl) return;
+      if (!audioRef.current || !currentSong || !directAudioUrl) return;
 
-    const audio = audioRef.current;
+      const audio = audioRef.current;
 
-    if (audio.src !== directAudioUrl) {
-      audio.src = directAudioUrl;
-      audio.load();
-    }
+      if (audio.src !== directAudioUrl) {
+        audio.src = directAudioUrl;
+        audio.load();
+      }
 
-    if (isPlaying) {
-      audio.play().catch((err) => {
-        console.warn("[AudioPlayer] Autoplay blocked for", currentSong.title, err);
-      });
-    } else {
-      audio.pause();
-    }
-  }, [currentSong, directAudioUrl, isPlaying]);
+      if (isPlaying) {
+        // Use safePlay helper to handle mobile autoplay restrictions
+        import("@/lib/mediaHelpers").then(({ safePlay, setupUserGestureUnlock }) => {
+          safePlay(audio).catch((err) => {
+            console.warn("[AudioPlayer] safePlay failed for", currentSong.title, err);
+          });
+
+          // Ensure user gesture will attempt to resume if needed
+          setupUserGestureUnlock(() => {
+            // attempt to unmute after user gesture if we had muted for autoplay
+            try {
+              if (audio.muted) audio.muted = false;
+              audio.play().catch(() => {});
+            } catch (e) {
+              // ignore
+            }
+          });
+        });
+      } else {
+        audio.pause();
+      }
+    }, [currentSong, directAudioUrl, isPlaying]);
 
   useEffect(() => {
     if (!audioRef.current || !currentSong) return;
