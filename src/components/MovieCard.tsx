@@ -96,7 +96,7 @@ const MovieCard = memo(function MovieCard({ movie, onPlay, onInfo }: MovieCardPr
           <iframe
             src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${youtubeId}&rel=0&playsinline=1`}
             className="w-full h-full pointer-events-none scale-150"
-            allow="autoplay"
+            allow="autoplay; encrypted-media; picture-in-picture"
             title=""
             aria-hidden="true"
           />
