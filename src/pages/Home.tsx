@@ -8,7 +8,7 @@ import LoadingSpinner from "../components/LoadingSpinner";
 import SongCard from "../components/SongCard";
 import SongRow from "../components/SongRow";
 import { Movie } from "../data/movies";
-import { getContinueWatchingMovies, saveWatchProgress, getWatchHistory } from "../utils/watchHistory";
+import { getContinueWatchingMovies, saveWatchProgress } from "../utils/watchHistory";
 import { useMovies } from "../context/MovieContext";
 import { useMusic } from "../context/MusicContext";
 import { Play, Music, Search, ListMusic, Shuffle } from "lucide-react";
@@ -195,18 +195,10 @@ function VideoHomeView() {
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const [selectedMovieForDetail, setSelectedMovieForDetail] = useState<Movie | null>(null);
   const [continueWatching, setContinueWatching] = useState<(Movie & { progress: number })[]>([]);
-  const [heroMovie, setHeroMovie] = useState<Movie | null>(null);
 
   useEffect(() => {
     if (!loading && movies.length > 0) {
       setContinueWatching(getContinueWatchingMovies(movies));
-      const history = getWatchHistory();
-      if (history.length > 0) {
-        const lastWatched = movies.find((m) => m.id === history[0].movieId);
-        setHeroMovie(lastWatched || movies[0]);
-      } else {
-        setHeroMovie(movies[0]);
-      }
     }
   }, [loading, movies]);
 
@@ -249,7 +241,6 @@ function VideoHomeView() {
   const topRatedMovies = useMemo(() => [...movies].sort((a, b) => parseFloat(b.rating) - parseFloat(a.rating)).slice(0, 10), [movies]);
 
   const handlePlay = useCallback((movie: Movie) => {
-    setHeroMovie(movie);
     saveWatchProgress(movie.id, 0);
     setSelectedMovie(movie);
     setSelectedMovieForDetail(null);
@@ -284,7 +275,9 @@ function VideoHomeView() {
 
   return (
     <main id="main-content" className="relative pb-20 md:pb-24">
-      {movies.length > 0 && heroMovie && <Banner movie={heroMovie} onPlay={handlePlay} onInfo={handleInfo} />}
+      {featuredMovies.length > 0 && (
+        <Banner movies={featuredMovies.slice(0, 5)} onPlay={handlePlay} onInfo={handleInfo} />
+      )}
       <div className="relative -mt-16 md:-mt-24 z-10 space-y-2 md:space-y-4">
         {continueWatching.length > 0 && (
           <MovieRow title="Continue Watching" movies={continueWatching} onPlay={handlePlay} onInfo={handleInfo} />
