@@ -5,6 +5,7 @@ import { MovieProvider } from "@/context/MovieContext";
 import { MusicProvider } from "@/context/MusicContext";
 import App from "@/App";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { ToastProvider } from "@/components/ui/toast";
 import "./index.css";
 
 createRoot(document.getElementById("root")!).render(
@@ -13,7 +14,9 @@ createRoot(document.getElementById("root")!).render(
       <MovieProvider>
         <MusicProvider>
           <ErrorBoundary>
-            <App />
+            <ToastProvider>
+              <App />
+            </ToastProvider>
           </ErrorBoundary>
         </MusicProvider>
       </MovieProvider>

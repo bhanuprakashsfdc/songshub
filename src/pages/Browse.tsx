@@ -6,6 +6,7 @@ import LoadingSpinner from "../components/LoadingSpinner";
 import { useMovies } from "../context/MovieContext";
 import { useMusic } from "../context/MusicContext";
 import { Movie } from "../data/movies";
+import { LanguageFilter } from "../components/dashboard/LanguageFilter";
 
 interface BrowseProps {
   type: string;
@@ -17,8 +18,9 @@ export default function Browse({ type, title }: BrowseProps) {
   const { songs } = useMusic();
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const [selectedMovieForDetail, setSelectedMovieForDetail] = useState<Movie | null>(null);
+  const [language, setLanguage] = useState("All");
 
-  const filteredMovies = useMemo(() => {
+  const typeFilteredMovies = useMemo(() => {
     switch (type) {
       case "tv-shows":
         return movies.filter((m) => {
@@ -38,6 +40,11 @@ export default function Browse({ type, title }: BrowseProps) {
         return movies;
     }
   }, [movies, songs, type]);
+
+  const filteredMovies = useMemo(() => {
+    if (language === "All") return typeFilteredMovies;
+    return typeFilteredMovies.filter((m) => (m.language || "") === language);
+  }, [typeFilteredMovies, language]);
 
   const rows = useMemo(() => {
     const map: Record<string, typeof movies> = {};
@@ -71,9 +78,12 @@ export default function Browse({ type, title }: BrowseProps) {
 
   return (
     <main className="relative min-h-screen pt-24 pb-20">
-      <div className="px-4 md:px-12 mb-6">
-        <h1 className="text-2xl md:text-4xl font-black text-white">{title}</h1>
-        <p className="text-neutral-400 mt-1">{filteredMovies.length} titles</p>
+      <div className="px-4 md:px-12 mb-6 flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl md:text-4xl font-black text-white">{title}</h1>
+          <p className="text-neutral-400 mt-1">{filteredMovies.length} titles</p>
+        </div>
+        <LanguageFilter items={typeFilteredMovies} value={language} onChange={setLanguage} className="mt-1" />
       </div>
       {filteredMovies.length === 0 ? (
         <p className="text-neutral-500 text-center py-20">No content found.</p>

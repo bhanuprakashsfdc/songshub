@@ -1,25 +1,43 @@
-import { useState, useEffect } from "react";
+"use client";
+
+import { useState, useEffect, useCallback } from "react";
 import { Play, Info, Volume2, VolumeX } from "lucide-react";
 import { Movie } from "../data/movies";
 import { motion } from "motion/react";
 
 interface BannerProps {
-  movie: Movie;
+  movies: Movie[];
   onPlay: (movie: Movie) => void;
   onInfo: (movie: Movie) => void;
 }
 
-export default function Banner({ movie, onPlay, onInfo }: BannerProps) {
-  const [showVideo, setShowVideo] = useState(false);
+export default function Banner({ movies, onPlay, onInfo }: BannerProps) {
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [isMuted, setIsMuted] = useState(true);
+  const [showVideo, setShowVideo] = useState(false);
+
+  const movie = movies[currentIndex];
+
+  useEffect(() => {
+    if (movies.length === 0) return;
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % movies.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [movies.length]);
 
   useEffect(() => {
     setShowVideo(false);
-    const timer = setTimeout(() => setShowVideo(true), 2000);
+    const timer = setTimeout(() => setShowVideo(true), 1200);
     return () => clearTimeout(timer);
-  }, [movie.id]);
+  }, [currentIndex]);
 
-  const youtubeId = movie.youtubeUrl?.split("/").pop()?.split("?")[0];
+  const youtubeId = movie?.youtubeUrl?.split("/").pop()?.split("?")[0];
+
+  const next = useCallback(() => setCurrentIndex((i) => (i + 1) % movies.length), [movies.length]);
+  const prev = useCallback(() => setCurrentIndex((i) => (i - 1 + movies.length) % movies.length), [movies.length]);
+
+  if (!movie) return null;
 
   return (
     <section className="relative h-[60vh] md:h-[85vh] w-full overflow-hidden" aria-label="Featured content">
@@ -52,13 +70,28 @@ export default function Banner({ movie, onPlay, onInfo }: BannerProps) {
         )}
 
         <div className="absolute inset-0 hero-vignette" aria-hidden="true" />
+
+        <button
+          onClick={prev}
+          className="absolute left-4 top-1/2 -translate-y-1/2 z-20 h-10 w-10 rounded-full bg-black/40 backdrop-blur text-white flex items-center justify-center hover:bg-black/60 transition-colors focus-ring"
+          aria-label="Previous slide"
+        >
+          <Play className="w-5 h-5" style={{ transform: "rotate(-90deg)" }} />
+        </button>
+        <button
+          onClick={next}
+          className="absolute right-4 top-1/2 -translate-y-1/2 z-20 h-10 w-10 rounded-full bg-black/40 backdrop-blur text-white flex items-center justify-center hover:bg-black/60 transition-colors focus-ring"
+          aria-label="Next slide"
+        >
+          <Play className="w-5 h-5" style={{ transform: "rotate(90deg)" }} />
+        </button>
       </div>
 
       <div className="absolute bottom-0 left-0 w-full px-4 md:px-12 pb-16 md:pb-24 z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
+          transition={{ duration: 0.6 }}
           className="max-w-2xl"
         >
           <h1 className="title-display text-4xl md:text-6xl lg:text-7xl text-white mb-4 drop-shadow-2xl leading-tight">
@@ -123,6 +156,22 @@ export default function Banner({ movie, onPlay, onInfo }: BannerProps) {
             </button>
           </div>
         </motion.div>
+
+        {movies.length > 1 && (
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+            {movies.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrentIndex(i)}
+                className={i === currentIndex
+                  ? "w-2 h-2 rounded-full bg-white"
+                  : "w-2 h-2 rounded-full bg-white/40 hover:bg-white"}
+                aria-label={`Go to slide ${i + 1}`}
+                aria-current={i === currentIndex ? "true" : undefined}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
